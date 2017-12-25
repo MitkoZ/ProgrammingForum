@@ -1,0 +1,29 @@
+﻿@model IEnumerable<ProgrammingForum.ViewModels.ViewQuestionViewModel>
+
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.Title)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.DateAsked)
+        </th>
+        <th></th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Title)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DateAsked)
+            </td>
+            <td>
+                @Html.ActionLink("Question Details", "CommentQuestion", new { id = item.QuestionId })
+            </td>
+        </tr>
+    }
+
+</table>

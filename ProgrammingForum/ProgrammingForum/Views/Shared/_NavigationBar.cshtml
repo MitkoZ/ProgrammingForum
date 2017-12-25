@@ -1,0 +1,36 @@
+﻿@using ProgrammingForum.Helpers
+<div class="navbar-collapse collapse">
+    <ul class="nav navbar-nav">
+        @if (LoginUserSession.Current.IsAuthenticated)
+        {
+            <li>
+                @Html.ActionLink("Logout", "Logout", "Home")
+            </li>
+            <li>
+                @Html.ActionLink("My Questions", "ViewMyQuestions", "Questions")
+            </li>
+        }
+        else
+        {
+            <li>
+                @Html.ActionLink("Login", "Login", "Home")
+            </li>
+        }
+        &nbsp;&nbsp;&nbsp;
+        @if (!LoginUserSession.Current.IsAuthenticated)
+        {
+            <li>
+                @Html.ActionLink("Register", "RegisterUser", "Home")
+            </li>
+        }
+
+        <li>
+            @Html.ActionLink("Ask Question", "AskQuestion", "Questions")
+        </li>
+
+        <li>
+            @Html.ActionLink("All Questions", "ViewAllQuestions", "Questions")
+        </li>
+    </ul>
+
+</div>
