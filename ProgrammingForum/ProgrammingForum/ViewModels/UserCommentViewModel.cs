@@ -14,5 +14,6 @@ namespace ProgrammingForum.ViewModels
         public string ParentCommentId { get; set; }
         public int CommentId { get; set; }
         public string CommentTo { get; set; }
+        public int UserId { get; set; }
     }
 }

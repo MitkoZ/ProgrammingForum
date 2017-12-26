@@ -18,9 +18,22 @@ namespace ProgrammingForum.ViewModels
         [CustomChosenCategoriesAttribute]
         public List<int> ChosenCategoriesIds { get; set; }
         public List<CategoryViewModel> AllCategories { get; set; }
+        public List<CategoryViewModel> CheckedCategories { get; set; }
+
+        public int QuestionId { get; set; }
         public AskQuestionViewModel()
         {
-            AllCategories = new List<CategoryViewModel>();
+            this.AllCategories = new List<CategoryViewModel>();
+            this.CheckedCategories = new List<CategoryViewModel>();
+            this.ChosenCategoriesIds = new List<int>();
+        }
+
+        public AskQuestionViewModel(List<Category> chosenCategories) : this()
+        {
+            foreach (Category category in chosenCategories)
+            {
+                CheckedCategories.Add(new CategoryViewModel(category));
+            }
         }
     }
 }

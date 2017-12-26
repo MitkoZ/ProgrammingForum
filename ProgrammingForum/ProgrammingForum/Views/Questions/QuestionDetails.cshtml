@@ -1,0 +1,136 @@
+﻿@model ProgrammingForum.ViewModels.UserCommentsAndQuestionViewModel
+@using ProgrammingForum.Helpers
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        <h4>My Questions</h4>
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+        <div style="margin-top:50px;">
+            <div class="form-group">
+                @Html.LabelFor(model => model.ViewQuestionViewModel.Title, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.DisplayFor(model => model.ViewQuestionViewModel.Title, new { htmlAttributes = new { @class = "form-control" } })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.ViewQuestionViewModel.QuestionText, htmlAttributes: new { @class = "control-label col-md-2" })
+
+                <div class="col-md-10">
+                    @Html.DisplayFor(model => model.ViewQuestionViewModel.QuestionText, new { htmlAttributes = new { @class = "form-control" } })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.ViewQuestionViewModel.DateAsked, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.DisplayFor(model => model.ViewQuestionViewModel.DateAsked, new { htmlAttributes = new { @class = "form-control" } })
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.ViewQuestionViewModel.ChosenCategories, htmlAttributes: new { @class = "control-label col-md-2" })
+
+                <div>
+                    @foreach (var category in Model.ViewQuestionViewModel.ChosenCategories)
+            {
+                <span style="background-color:#E1ECF4; color:#07C; display: inline-block;">
+                    @category.CategoryName
+                </span>
+    }
+                </div>
+
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.ViewQuestionViewModel.AskedBy, htmlAttributes: new { @class = "control-label col-md-2" })
+
+                <div class="col-md-10">
+                    @Html.DisplayFor(model => model.ViewQuestionViewModel.AskedBy, new { htmlAttributes = new { @class = "form-control" } })
+                </div>
+            </div>
+            @if (Model.ViewQuestionViewModel.UserId == LoginUserSession.Current.UserID)
+    {
+        <div>
+            @Html.ActionLink("Delete Question", "DeleteQuestion", new { id = Model.ViewQuestionViewModel.QuestionId }, new { @class = "btn btn-danger btn-sm" })
+            @Html.ActionLink("Edit Question", "EditQuestion", new { id = Model.ViewQuestionViewModel.QuestionId }, new { @class = "btn btn-warning btn-sm" })
+        </div>
+}
+        </div>
+
+    </div>
+}
+<div>
+    <hr />
+
+    @if (Model.UsersCommentsViewModel != null && Model.UsersCommentsViewModel.Count > 0)
+    {
+        <h1>Answers</h1>
+
+        for (int i = 0; i < Model.UsersCommentsViewModel.Count; i++)
+        {
+            using (Html.BeginForm("CommentAComment", "Questions", FormMethod.Post))
+            {
+                int margin = 0;
+                margin = @Model.UsersCommentsViewModel[i].Lineage.Count(x => x.Equals('/')) * 100;
+                string marginStr = margin.ToString() + "px";
+                <div style="margin-left:@marginStr;">
+                    <b>Comment To: </b>@Model.UsersCommentsViewModel[i].CommentTo<br />
+                    <b>From Username: </b>@Html.DisplayFor(model => model.UsersCommentsViewModel[i].Username)<br />
+                    <b>Date: </b>@Html.DisplayFor(model => model.UsersCommentsViewModel[i].DateCommented)<br />
+                    <b>Comment:</b> @Html.DisplayFor(model => model.UsersCommentsViewModel[i].CommentedTextFormatted)<br />
+                    @{
+                        string guidForLabel = @Guid.NewGuid().ToString();
+                        string guidForContainer = @Guid.NewGuid().ToString();
+                    }
+                    <b id="@guidForLabel" style="color:blue;">Add Comment:</b>
+                    <script>
+                        $(document).ready(function () {
+                                 $("#" + "@guidForLabel").click(function () {
+                                $("#" + "@guidForContainer").show();
+                            });
+                        })
+                    </script>
+                    <div id="@guidForContainer">
+                        @Html.TextBox("CommentText", null, new { @class = "form-control" })
+                        <input type="submit" value="Post Your comment" class="btn btn-default" style="background-color: #0095ff; color:white;" />
+                    </div>
+                    <div>
+                        @if (LoginUserSession.Current.UserID == Model.UsersCommentsViewModel[i].UserId)
+                        {
+                            @Html.ActionLink("Delete", "DeleteComment", "Questions", new { id = Model.UsersCommentsViewModel[i].CommentId, }, new { @class = "btn btn-danger btn-sm" })
+                        }
+                    </div>
+                    <script>
+                       $("#"+"@guidForContainer").hide();
+                    </script>
+                    @Html.Hidden("QuestionId", Model.ViewQuestionViewModel.QuestionId)
+                    @Html.Hidden("CommentId", Model.UsersCommentsViewModel[i].CommentId)
+
+                </div>
+                <br />
+            }
+        }
+    }
+</div>
+
+
+<div>
+    <h2>Your Answer:</h2>
+    @using (Html.BeginForm("CommentQuestion", "Questions", FormMethod.Post))
+    {
+        @Html.TextArea("CommentText", null, 15, 100, new { htmlAttributes = new { @class = "form-control" } })
+        <div class="form-group">
+            <div class="col-md-10">
+                <input type="submit" value="Post Your Answer" class="btn btn-default" style="background-color: #0095ff; color:white;" />
+                @Html.ValidationMessage("CommentText", "", new { @class = "text-danger" })
+            </div>
+        </div>
+        @Html.Hidden("Id", Model.ViewQuestionViewModel.QuestionId)
+    }
+</div>
+<p>
+    @Html.ActionLink("Back to Home Page", "Index", "Home")
+</p>

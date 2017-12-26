@@ -22,5 +22,10 @@ namespace ProgrammingForum.ViewModels
             this.CategoryName = categoryModel.CategoryName;
             this.Description = categoryModel.Description;
         }
+
+        public CategoryViewModel()
+        {
+
+        }
     }
 }

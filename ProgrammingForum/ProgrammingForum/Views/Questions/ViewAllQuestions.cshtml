@@ -1,29 +1,65 @@
 ﻿@model IEnumerable<ProgrammingForum.ViewModels.ViewQuestionViewModel>
+@using ProgrammingForum.Helpers
 
+<script>
+    $(document).ready(function () {
+        $('.table').DataTable();
+    });
+</script>
 <table class="table">
-    <tr>
-        <th>
-            @Html.DisplayNameFor(model => model.Title)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.DateAsked)
-        </th>
-        <th></th>
-    </tr>
-
-    @foreach (var item in Model)
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Title)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DateAsked)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ChosenCategories)
+            </th>
+            <th></th>
+            <th></th>
+            <th></th>
+        </tr>
+    </thead>
+    @foreach (var question in Model)
     {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.Title)
+                @Html.DisplayFor(modelItem => question.Title)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.DateAsked)
+                @Html.DisplayFor(modelItem => question.DateAsked)
             </td>
             <td>
-                @Html.ActionLink("Question Details", "CommentQuestion", new { id = item.QuestionId })
+                <div class="form-group">
+                    <div>
+                        @foreach (var category in question.ChosenCategories)
+                        {
+                            <span style="background-color:#E1ECF4; color:#07C; display: inline-block;">
+                                @category.CategoryName
+                            </span>
+                        }
+                    </div>
+
+                </div>
+            </td>
+            <td>
+                @Html.ActionLink("Question Details", "QuestionDetails", new { id = question.QuestionId }, new { @class = "btn btn-info btn-sm" })
+            </td>
+            <td>
+                @if (question.UserId == LoginUserSession.Current.UserID)
+                {
+                    @Html.ActionLink("Delete Question", "DeleteQuestion", new { id = question.QuestionId }, new { @class = "btn btn-danger btn-sm" })
+                }
+            </td>
+            <td>
+                @if (question.UserId == LoginUserSession.Current.UserID)
+                {
+                    @Html.ActionLink("Edit Question", "EditQuestion", new { id = question.QuestionId }, new { @class = "btn btn-warning btn-sm" })
+                }
             </td>
         </tr>
     }
-
 </table>
